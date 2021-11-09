@@ -1,0 +1,43 @@
+<script type="text/javascript">
+    RED.nodes.registerType('wcm-com',{
+        category: 'function',
+        color: '#a6bbcf',
+        defaults: {
+            name: {value:""}
+        },
+        credentials: {
+            host: {type:"text"},
+            username: {type:"text"},
+            password: {type:"password"}
+        },
+        inputs:1,
+        outputs:1,
+        icon: "file.png",
+        label: function() {
+            return this.name||"wcm-com";
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="wcm-com">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-host"><i class="fa fa-tag"></i> Host</label>
+        <input type="text" id="node-input-host" placeholder="node-input-host">
+    </div>
+    <div class="form-row">
+        <label for="node-input-username"><i class="fa fa-tag"></i> Username</label>
+        <input type="text" id="node-input-username">
+    </div>
+    <div class="form-row">
+        <label for="node-input-password"><i class="fa fa-tag"></i> Password</label>
+        <input type="password" id="node-input-password">
+    </div>
+</script>
+
+<script type="text/html" data-help-name="wcm-com">
+    <p>A simple node that converts the message payloads into all wcm-com characters</p>
+</script>
