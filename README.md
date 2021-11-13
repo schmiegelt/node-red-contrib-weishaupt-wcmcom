@@ -7,14 +7,15 @@ This is a custom node, written for  [Node-RED](http://nodered.org). It retrieves
 Install via Node-RED Manage Palette
 
 ```
-node-red-contrib-home-assistant-websocket
+node-red-contrib-weishaupt-wcmcom
 ```
 
 Install via npm
 
 ```shell
 $ cd ~/.node-red
-$ npm install node-red-contrib-home-assistant-websocket
+$ SOON: npm install node-red-contrib-weishaupt-wcmcom
+npm install schmiegelt/node-red-contrib-weishaupt-wcmcom
 # then restart node-red
 ```
 
