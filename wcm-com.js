@@ -8,12 +8,12 @@ module.exports = function(RED) {
     //encoding what is queried, along with the readable name and the template (defining how numbers are handled)
     const queryObjects = 
         [
-            {"key": "oil_meter", "code": 3793, "template": "VALUE"},
-            {"key": "load_setting", "code": 4176, "template": "DECIMAL_VALUE"},
-            {"key": "outside_temperature", "code": 12, "template": "TEMP"},
-            {"key": "warm_water_temperature", "code": 14, "template": "TEMP"},
-            {"key": "flow_temperature", "code": 3101, "template": "TEMP"},
-            {"key": "flue_gas_temperature", "code": 325, "template": "TEMP"}
+            {"key": "oil_meter", "code": 3793, "template": "VALUE", "filter0": true},
+            {"key": "load_setting", "code": 4176, "template": "DECIMAL_VALUE", "filter0": false},
+            {"key": "outside_temperature", "code": 12, "template": "TEMP", "filter0": false},
+            {"key": "warm_water_temperature", "code": 14, "template": "TEMP", "filter0": true},
+            {"key": "flow_temperature", "code": 3101, "template": "TEMP", "filter0": true},
+            {"key": "flue_gas_temperature", "code": 325, "template": "TEMP", "filter0": true}
         ]
 
     var client;
@@ -23,6 +23,8 @@ module.exports = function(RED) {
         body: queryTelegram,
         timeout: 5000
     };
+
+    var lastResult = undefined;
 
     function setup(node) {
         client = new DigestFetch(node.credentials.username, node.credentials.password)
@@ -45,6 +47,7 @@ module.exports = function(RED) {
 
     async function queryHeadExchanger() {
         try {
+            console.log("Start Query")
             const resonse = await client.fetch(queryURL, options)
             const returnTelegram = (await resonse.json()).telegramm
 
@@ -73,7 +76,13 @@ module.exports = function(RED) {
                                 break;
                         }
 
+                        //Error ha handling: 
+                        //if the value is 0, something went wrong, so discard the result
+                        if(resultObject[key].filter0) {
+                            throw new Error(`Retrieving ${ key } returned 0`)
+                        }
                        
+
                     }
                     
                 });
@@ -83,12 +92,19 @@ module.exports = function(RED) {
                 }
             });
 
+            //Occasionally, the one of the two oil meter readings is missing. To prevent this from happening,
+            if (lastResult && lastResultresultObject["oil_meter"] < lastResult["oil_meter"]) {
+                throw new Error("Oil meter readings cannot decrease")
+            }
+
         }
         catch (error) {
             console.log(error)
             throw new Error("Could not retrive data")
 
         }
+        lastResult = [...resultObject]
+        console.log("End Query")
         return resultObject
     }
 
