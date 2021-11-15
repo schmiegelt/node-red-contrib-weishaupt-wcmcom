@@ -8,12 +8,12 @@ module.exports = function(RED) {
     //encoding what is queried, along with the readable name and the template (defining how numbers are handled)
     const queryObjects = 
         [
-            {"key": "oil_meter", "code": 3793, "template": "VALUE", "filter0": true},
-            {"key": "load_setting", "code": 4176, "template": "DECIMAL_VALUE", "filter0": false},
-            {"key": "outside_temperature", "code": 12, "template": "TEMP", "filter0": false},
-            {"key": "warm_water_temperature", "code": 14, "template": "TEMP", "filter0": true},
-            {"key": "flow_temperature", "code": 3101, "template": "TEMP", "filter0": true},
-            {"key": "flue_gas_temperature", "code": 325, "template": "TEMP", "filter0": true}
+            {"key": "oil_meter", "code": 3793, "template": "VALUE", "filter_zero": true},
+            {"key": "load_setting", "code": 4176, "template": "DECIMAL_VALUE", "filter_zero": false},
+            {"key": "outside_temperature", "code": 12, "template": "TEMP", "filter_zero": false},
+            {"key": "warm_water_temperature", "code": 14, "template": "TEMP", "filter_zero": true},
+            {"key": "flow_temperature", "code": 3101, "template": "TEMP", "filter_zero": true},
+            {"key": "flue_gas_temperature", "code": 325, "template": "TEMP", "filter_zero": true}
         ]
 
     var client;
@@ -47,7 +47,6 @@ module.exports = function(RED) {
 
     async function queryHeadExchanger() {
         try {
-            console.log("Start Query")
             const resonse = await client.fetch(queryURL, options)
             const returnTelegram = (await resonse.json()).telegramm
 
@@ -78,7 +77,7 @@ module.exports = function(RED) {
 
                         //Error ha handling: 
                         //if the value is 0, something went wrong, so discard the result
-                        if(resultObject[key].filter0) {
+                        if(queryObject.filter_zero == true && resultObject[key] == 0) {
                             throw new Error(`Retrieving ${ key } returned 0`)
                         }
                        
@@ -93,7 +92,7 @@ module.exports = function(RED) {
             });
 
             //Occasionally, the one of the two oil meter readings is missing. To prevent this from happening,
-            if (lastResult && lastResultresultObject["oil_meter"] < lastResult["oil_meter"]) {
+            if (!(lastResult === undefined) && resultObject["oil_meter"] < lastResult["oil_meter"]) {
                 throw new Error("Oil meter readings cannot decrease")
             }
 
@@ -103,8 +102,8 @@ module.exports = function(RED) {
             throw new Error("Could not retrive data")
 
         }
-        lastResult = [...resultObject]
-        console.log("End Query")
+        lastResult = { ...resultObject }
+        
         return resultObject
     }
 
