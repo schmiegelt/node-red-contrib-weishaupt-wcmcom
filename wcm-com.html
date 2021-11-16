@@ -1,9 +1,9 @@
 <script type="text/javascript">
     RED.nodes.registerType('wcm-com',{
         category: 'function',
-        color: '#a6bbcf',
+        color: '#FFAAAA',
         defaults: {
-            name: {value:""}
+            name: {value:"", required: true}
         },
         credentials: {
             host: {type:"text"},
@@ -12,7 +12,7 @@
         },
         inputs:1,
         outputs:1,
-        icon: "file.png",
+        icon: "font-awesome/fa-fire",
         label: function() {
             return this.name||"wcm-com";
         }
@@ -25,15 +25,15 @@
         <input type="text" id="node-input-name" placeholder="Name">
     </div>
     <div class="form-row">
-        <label for="node-input-host"><i class="fa fa-tag"></i> Host</label>
+        <label for="node-input-host"><i class="fa fa-server"></i> Host</label>
         <input type="text" id="node-input-host" placeholder="node-input-host">
     </div>
     <div class="form-row">
-        <label for="node-input-username"><i class="fa fa-tag"></i> Username</label>
+        <label for="node-input-username"><i class="fa fa-user"></i> Username</label>
         <input type="text" id="node-input-username">
     </div>
     <div class="form-row">
-        <label for="node-input-password"><i class="fa fa-tag"></i> Password</label>
+        <label for="node-input-password"><i class="fa fa-key"></i> Password</label>
         <input type="password" id="node-input-password">
     </div>
 </script>
